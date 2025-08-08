@@ -6,7 +6,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { Todo } from "@/types/custom";
-import { data } from "autoprefixer";
 import { Trash2 } from "lucide-react";
 import { useFormStatus } from "react-dom";
 import { TodoOptimisticUpdate } from "./todo-list";
@@ -30,14 +29,25 @@ export function TodoCard({ todo, optimisticUpdate }: { todo: Todo, optimisticUpd
         <span className="size-10 flex items-center justify-center">
           <Checkbox 
           // checked={Boolean(todo.is_complete)} 
-          checked={Boolean (checked)} 
-          onCheckedChange={async (val) =>{
-            // Prevent acidental updates when checkbox in ambiguous state
-            if (val === "indeterminate") return
+          // checked={Boolean (checked)} 
+          type="submit"
+          checked={Boolean (todo.is_complete)} 
+          // onCheckedChange={async (val) =>{
+          //   // Prevent acidental updates when checkbox in ambiguous state
+          //   if (val === "indeterminate") return
+          //   setChecked(val)
+          //   // ...object: spread syntax for objects, uses to create a new object with all properties of the old object
+          //   await updateTodo({...todo, is_complete: val});
+          // }} />
+          // optimistic update for checkbox
+          formAction={async () =>{
             // Optimistic update for checkbox
-            setChecked(val)
+            optimisticUpdate({
+              action: "update",
+              todo: {...todo, is_complete: !todo.is_complete}
+            })
             // ...object: spread syntax for objects, uses to create a new object with all properties of the old object
-            await updateTodo({...todo, is_complete: val});
+            await updateTodo({...todo, is_complete: !todo.is_complete});
           }} />
         </span>
         <p className={cn("flex-1 pt-2 min-w-0 break-words")}>{todo.task }</p>
