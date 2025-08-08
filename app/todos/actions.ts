@@ -3,10 +3,15 @@
 import { Todo } from "@/types/custom"
 import { createClient } from "@/utils/supabase/server"
 import { revalidatePath } from "next/cache"
+import { resolve } from "path"
 
 // Actions used to handle server actions
 
 export async function addTodo(formData:FormData) {
+    // await new Promise((resolve) =>{
+    //     // Simulate server processing
+    //     setTimeout(resolve, 1000);
+    // })
     const supabase = await createClient()
     // Could add more validation later
     const text = formData.get("todo") as string | null

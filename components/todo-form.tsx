@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
 import { useRef } from "react";
 import { useFormStatus } from "react-dom";
+import { TodoOptimisticUpdate } from "./todo-list";
+import { Todo } from "@/types/custom";
 
 function FormContent() {
   // react hooks form
@@ -29,14 +31,25 @@ function FormContent() {
   );
 }
 
-export function TodoForm() {
+export function TodoForm({optimisticUpdate}: {optimisticUpdate: TodoOptimisticUpdate}) {
   // React hooks
   const formRef = useRef<HTMLFormElement>(null)
 
   return (
     <Card>
       <CardContent className="p-3">
-        <form ref={formRef} action={async (data) => {
+        <form ref={formRef} 
+        action={async (data) => {
+          // Fake data for optimistic update
+          const newTodo: Todo = {
+            id: -1,
+            inserted_at: "",
+            is_complete: false,
+            user_id: "",
+            task: data.get("todo") as string
+          }
+          // Run reducer fuction with "create" action to perform optimistic update
+          optimisticUpdate({action: "create", todo: newTodo})
           await addTodo(data)
           // reset the form (clear all fields) when item added
           formRef.current?.reset()
